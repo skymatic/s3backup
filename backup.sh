@@ -38,7 +38,7 @@ do
     aws s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE} --storage-class=${AWS_STORAGE_CLASS};
   else \
     echo "Encrypting file  ${FILE} using $(openssl version) with AES-128-CTR and iv/key derived from provided password.";
-    openssl enc -AES-128-CTR -in ${FILE} -out /tmp/ENC_FILE -pass pass:${OPENSSL_ENC_PASS};
+    openssl enc -AES-128-CTR -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
     echo "Uploading encrypted file ${FILE}.enc...";
     aws s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc --storage-class=${AWS_STORAGE_CLASS};
     rm /tmp/${FILE}.enc;
