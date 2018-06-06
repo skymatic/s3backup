@@ -2,7 +2,7 @@
 To backup contents of your current working directory:
 
 ```bash
-docker run --rm -v $(pwd):/workdir -e "AWS_ACCESS_KEY_ID=..." -e "AWS_SECRET_ACCESS_KEY=.../" -e "AWS_S3_BUCKET_PATH=s3://my-bucket/ skymatic/s3backup
+docker run --rm -v $(pwd):/workdir -e "AWS_ACCESS_KEY_ID=..." -e "AWS_SECRET_ACCESS_KEY=.../" -e "AWS_S3_BUCKET_PATH=s3://my-bucket/" skymatic/s3backup
 ```
 
 ## Scheduled Backup
