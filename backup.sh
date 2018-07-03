@@ -24,12 +24,6 @@ then
   exit 1;
 fi
 
-if [ ! -f ${BACKUP_FILE_PATH} ]
-then
-  echo "${BACKUP_FILE_PATH} does not exist.";
-  exit 1;
-fi
-
 for FILE in ${BACKUP_FILE_GLOB}
 do
   if [ -z "${OPENSSL_ENC_PASS}" ]
