@@ -18,7 +18,7 @@ then
   exit 1;
 fi
 
-if [ -d "${BACKUP_DIRECTORY}" ]
+if [ ! -d "${BACKUP_DIRECTORY}" ]
 then
   echo "BACKUP_DIRECTORY not a valid directory.";
   exit 1;
