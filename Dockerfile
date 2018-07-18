@@ -10,7 +10,9 @@ RUN apk --update add python py-pip openssl \
   && apk --purge del py-pip \
   && rm -rf /var/cache/apk/*
 ADD backup.sh /backup.sh
+ADD restore.sh /restore.sh
 RUN chmod +x /backup.sh
+RUN chmod +x /restore.sh
 RUN aws configure set default.s3.multipart_threshold 1GB \
   && aws configure set default.s3.multipart_chunksize 1GB
 

@@ -5,6 +5,13 @@ To backup contents of your current working directory:
 docker run --rm -v $(pwd):/backups -e "AWS_ACCESS_KEY_ID=..." -e "AWS_SECRET_ACCESS_KEY=.../" -e "AWS_S3_BUCKET_PATH=s3://my-bucket/" skymatic/s3backup
 ```
 
+## Manual Restore
+To restore a backup, run the restore script interactively (note the `-it`):
+
+```bash
+docker run -it --rm -v $(pwd):/backups -e "AWS_ACCESS_KEY_ID=..." -e "AWS_SECRET_ACCESS_KEY=.../" -e "AWS_S3_BUCKET_PATH=s3://my-bucket/" skymatic/s3backup ./restore.sh
+```
+
 ## Scheduled Backup
 Use compose to schedule backups to run [daily](https://docs.docker.com/compose/compose-file/#specifying-durations):
 
@@ -36,5 +43,9 @@ services:
 | AWS_STORAGE_CLASS | `REDUCED_REDUNDANCY | Specify storage class |
 
 ## Bucket-Credentials
-Create an AWS IAM user and grant the following privileges for your bucket (e.g. `arn:aws:s3:::my-bucket/*`):
+Create an AWS IAM user and grant the following privileges for your bucket objects (e.g. `arn:aws:s3:::my-bucket/*`):
 * `s3:PutObject`
+
+For restoring you also need the following permissions on your bucket and bucket objects (e.g. `arn:aws:s3:::my-bucket` and `arn:aws:s3:::my-bucket/*`):
+* `s3:GetObject`
+* `s3:ListBucket`
