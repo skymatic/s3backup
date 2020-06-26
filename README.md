@@ -40,7 +40,9 @@ services:
 | BACKUP_FILE_GLOB | `*` | Backup only specific files of your backup dir, e.g. `*.tar.gz` |
 | OPENSSL_ENC_PASS |  | Set to non-null value to encrypt file before uploading |
 | AWS_DEFAULT_REGION | `eu-central-1` | Specify region |
-| AWS_STORAGE_CLASS | `REDUCED_REDUNDANCY | Specify storage class |
+| AWS_STORAGE_CLASS | `REDUCED_REDUNDANCY` | Specify storage class |
+| AWS_ACCESS_KEY_ID |  | The API key id of your AWS user |
+| AWS_SECRET_ACCESS_KEY |  | The API key of your AWS user |
 
 ## Bucket-Credentials
 Create an AWS IAM user and grant the following privileges for your bucket objects (e.g. `arn:aws:s3:::my-bucket/*`):
