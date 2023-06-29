@@ -40,7 +40,7 @@ services:
 | BACKUP_FILE_GLOB | `*` | Backup only specific files of your backup dir, e.g. `*.tar.gz` |
 | OPENSSL_ENC_PASS |  | Set to non-null value to encrypt file before uploading |
 | AWS_DEFAULT_REGION | `eu-central-1` | Specify region |
-| AWS_STORAGE_CLASS | `REDUCED_REDUNDANCY` | Specify storage class |
+| AWS_ENDPOINT_URL |  | The endpoint URL is required for non Amazon AWS Object Storages |
 | AWS_ACCESS_KEY_ID |  | The API key id of your AWS user |
 | AWS_SECRET_ACCESS_KEY |  | The API key of your AWS user |
 
