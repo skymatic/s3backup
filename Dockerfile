@@ -1,13 +1,11 @@
-FROM alpine:3.7
+FROM alpine:3.18
 
 MAINTAINER Sebastian Stenzel <sebastian.stenzel@skymatic.de>
 
 # latest aws cli version: https://pypi.org/project/awscli/#description
-ARG AWS_CLI_VERSION=1.15.21
+ARG AWS_CLI_VERSION=2.12.4
 
-RUN apk --update add python py-pip openssl \
-  && pip install awscli==${AWS_CLI_VERSION} \
-  && apk --purge del py-pip \
+RUN apk --update add aws-cli openssl \
   && rm -rf /var/cache/apk/*
 ADD backup.sh /backup.sh
 ADD restore.sh /restore.sh
