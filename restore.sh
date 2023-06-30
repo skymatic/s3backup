@@ -33,14 +33,24 @@ fi
 cd "${BACKUP_DIRECTORY}"
 
 echo "Existing backups:"
-aws s3 ls ${AWS_S3_BUCKET_PATH} --human-readable
+if [ -z "${AWS_ENDPOINT_URL}" ]
+then
+  aws s3 ls ${AWS_S3_BUCKET_PATH} --human-readable
+else \
+  aws --endpoint-url ${AWS_ENDPOINT_URL} s3 ls ${AWS_S3_BUCKET_PATH} --human-readable
+fi
 
 echo -n "Enter file glob (default: ${BACKUP_FILE_GLOB}): "
 read restore_glob
 restore_glob=${restore_glob:-${BACKUP_FILE_GLOB}}
 
 echo "Restoring ${AWS_S3_BUCKET_PATH}${restore_glob}".
-aws s3 cp ${AWS_S3_BUCKET_PATH} . --recursive --include "${restore_glob}"
+if [ -z "${AWS_ENDPOINT_URL}" ]
+then
+  aws s3 cp ${AWS_S3_BUCKET_PATH} . --recursive --include "${restore_glob}"
+else \
+  aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp ${AWS_S3_BUCKET_PATH} . --recursive --include "${restore_glob}"
+fi
 
 for FILE in ${restore_glob}
 do
