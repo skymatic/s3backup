@@ -37,12 +37,22 @@ do
   if [ -z "${OPENSSL_ENC_PASS}" ]
   then
     echo "Uploading unencrypted file ${FILE}...";
-    aws s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE} --storage-class=${AWS_STORAGE_CLASS};
+    if [ -z "${AWS_ENDPOINT_URL}" ]
+    then
+      aws s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE};
+    else \
+      aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE};
+    fi
   else \
     echo "Encrypting file  ${FILE} using $(openssl version) with AES-128-CTR and iv/key derived from provided password.";
     openssl enc -AES-128-CTR -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
     echo "Uploading encrypted file ${FILE}.enc...";
-    aws s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc --storage-class=${AWS_STORAGE_CLASS};
+    if [ -z "${AWS_ENDPOINT_URL}" ]
+    then
+      aws s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
+    else \
+      aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
+    fi
     rm /tmp/${FILE}.enc;
   fi
 done
