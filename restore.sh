@@ -56,7 +56,7 @@ for FILE in ${restore_glob}
 do
   if [[ ${FILE} == *.enc ]]
   then
-    echo "Decrypting ${FILE} to ${FILE%.enc} using $(openssl version) with AES-128-CTR and iv/key derived from provided password.";
-    openssl enc -d -AES-128-CTR -in ${FILE} -out ${FILE%.enc} -pass pass:${OPENSSL_ENC_PASS}
+    echo "Decrypting ${FILE} to ${FILE%.enc} using $(openssl version) with AES-256-CTR and iv/key derived from provided password.";
+    openssl enc -d -AES-256-CTR -pbkdf2 -iter 1000000 -in ${FILE} -out ${FILE%.enc} -pass pass:${OPENSSL_ENC_PASS}
   fi
 done

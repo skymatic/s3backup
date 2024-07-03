@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.20
 
 MAINTAINER Sebastian Stenzel <sebastian.stenzel@skymatic.de>
 

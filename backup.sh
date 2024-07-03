@@ -44,8 +44,8 @@ do
       aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE};
     fi
   else \
-    echo "Encrypting file  ${FILE} using $(openssl version) with AES-128-CTR and iv/key derived from provided password.";
-    openssl enc -AES-128-CTR -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
+    echo "Encrypting file  ${FILE} using $(openssl version) with AES-256-CTR and iv/key derived from provided password.";
+    openssl enc -AES-256-CTR -pbkdf2 -iter 1000000 -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
     echo "Uploading encrypted file ${FILE}.enc...";
     if [ -z "${AWS_ENDPOINT_URL}" ]
     then
