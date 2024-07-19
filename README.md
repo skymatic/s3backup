@@ -43,6 +43,7 @@ services:
 | AWS_ENDPOINT_URL |  | The endpoint URL is required for non Amazon AWS Object Storages |
 | AWS_ACCESS_KEY_ID |  | The API key id of your AWS user |
 | AWS_SECRET_ACCESS_KEY |  | The API key of your AWS user |
+| RETENTION_POLICIES |  | Tags which are used for retention, e.g. `RetentionDays=1&RetentionWeeks=10` |
 
 ## Bucket-Credentials
 Create an AWS IAM user and grant the following privileges for your bucket objects (e.g. `arn:aws:s3:::my-bucket/*`):

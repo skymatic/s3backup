@@ -30,27 +30,33 @@ then
   exit 1;
 fi
 
+if [ -z "${AWS_ENDPOINT_URL}" ]
+then
+  echo "AWS_ENDPOINT_URL not set.";
+  exit 1;
+fi
+
+S3CMD_SYNC_OPTIONS="--host=${AWS_ENDPOINT_URL} --host-bucket=${AWS_ENDPOINT_URL}"
+
+if [ -n "${BACKUP_FILE_GLOB}" ]; then
+  S3CMD_SYNC_OPTIONS="${S3CMD_SYNC_OPTIONS} --include='${BACKUP_FILE_GLOB}' --exclude='*'"
+fi
+
+if [ -n "${AWS_DEFAULT_REGION}" ]; then
+  S3CMD_SYNC_OPTIONS="${S3CMD_SYNC_OPTIONS} --bucket-location=${AWS_DEFAULT_REGION}"
+fi
+
 cd "${BACKUP_DIRECTORY}"
 
 echo "Existing backups:"
-if [ -z "${AWS_ENDPOINT_URL}" ]
-then
-  aws s3 ls ${AWS_S3_BUCKET_PATH} --human-readable
-else \
-  aws --endpoint-url ${AWS_ENDPOINT_URL} s3 ls ${AWS_S3_BUCKET_PATH} --human-readable
-fi
+s3cmd ls ${S3CMD_SYNC_OPTIONS} ${AWS_S3_BUCKET_PATH} --human-readable
 
 echo -n "Enter file glob (default: ${BACKUP_FILE_GLOB}): "
 read restore_glob
 restore_glob=${restore_glob:-${BACKUP_FILE_GLOB}}
 
 echo "Restoring ${AWS_S3_BUCKET_PATH}${restore_glob}".
-if [ -z "${AWS_ENDPOINT_URL}" ]
-then
-  aws s3 cp ${AWS_S3_BUCKET_PATH} . --recursive --include "${restore_glob}"
-else \
-  aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp ${AWS_S3_BUCKET_PATH} . --recursive --include "${restore_glob}"
-fi
+s3cmd sync ${S3CMD_SYNC_OPTIONS} ${BACKUP_DIRECTORY} ${AWS_S3_BUCKET_PATH};
 
 for FILE in ${restore_glob}
 do

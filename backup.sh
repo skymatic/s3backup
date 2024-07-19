@@ -30,6 +30,26 @@ then
   exit 1;
 fi
 
+if [ -z "${AWS_ENDPOINT_URL}" ]
+then
+  echo "AWS_ENDPOINT_URL not set.";
+  exit 1;
+fi
+
+S3CMD_SYNC_OPTIONS="--multipart-chunk-size-mb=1000 --host=${AWS_ENDPOINT_URL} --host-bucket=${AWS_ENDPOINT_URL}"
+
+if [ -n "${BACKUP_FILE_GLOB}" ]; then
+  S3CMD_SYNC_OPTIONS="${S3CMD_SYNC_OPTIONS} --include='${BACKUP_FILE_GLOB}' --exclude='*'"
+fi
+
+if [ -n "${AWS_DEFAULT_REGION}" ]; then
+  S3CMD_SYNC_OPTIONS="${S3CMD_SYNC_OPTIONS} --bucket-location=${AWS_DEFAULT_REGION}"
+fi
+
+if [ -n "${RETENTION_POLICIES}" ]; then
+  S3CMD_SYNC_OPTIONS="${S3CMD_SYNC_OPTIONS} --add-header=x-amz-tagging:${RETENTION_POLICIES}"
+fi
+
 cd "${BACKUP_DIRECTORY}";
 
 for FILE in ${BACKUP_FILE_GLOB}
@@ -37,22 +57,12 @@ do
   if [ -z "${OPENSSL_ENC_PASS}" ]
   then
     echo "Uploading unencrypted file ${FILE}...";
-    if [ -z "${AWS_ENDPOINT_URL}" ]
-    then
-      aws s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE};
-    else \
-      aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp ${FILE} ${AWS_S3_BUCKET_PATH}${FILE};
-    fi
+    s3cmd sync ${S3CMD_SYNC_OPTIONS} ${BACKUP_DIRECTORY} ${AWS_S3_BUCKET_PATH};
   else \
     echo "Encrypting file  ${FILE} using $(openssl version) with AES-256-CTR and iv/key derived from provided password.";
     openssl enc -AES-256-CTR -pbkdf2 -iter 1000000 -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
     echo "Uploading encrypted file ${FILE}.enc...";
-    if [ -z "${AWS_ENDPOINT_URL}" ]
-    then
-      aws s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
-    else \
-      aws --endpoint-url ${AWS_ENDPOINT_URL} s3 cp /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
-    fi
+    s3cmd sync ${S3CMD_SYNC_OPTIONS} ${AWS_ENDPOINT_URL} /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
     rm /tmp/${FILE}.enc;
   fi
 done
