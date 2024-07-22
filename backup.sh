@@ -62,7 +62,7 @@ do
     echo "Encrypting file  ${FILE} using $(openssl version) with AES-256-CTR and iv/key derived from provided password.";
     openssl enc -AES-256-CTR -pbkdf2 -iter 1000000 -in ${FILE} -out /tmp/${FILE}.enc -pass pass:${OPENSSL_ENC_PASS};
     echo "Uploading encrypted file ${FILE}.enc...";
-    s3cmd sync ${S3CMD_SYNC_OPTIONS} ${AWS_ENDPOINT_URL} /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
+    s3cmd sync ${S3CMD_SYNC_OPTIONS} /tmp/${FILE}.enc ${AWS_S3_BUCKET_PATH}${FILE}.enc;
     rm /tmp/${FILE}.enc;
   fi
 done
